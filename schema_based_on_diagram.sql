@@ -1,0 +1,74 @@
+-- Create the patients table
+CREATE TABLE patients (
+   ID INT GENERATED ALWAYS AS IDENTITY,
+   NAME VARCHAR (20),
+   DATE_OF_BIRTH DATE,
+   PRIMARY KEY (ID)
+);
+
+
+-- Create the medical-histories table
+CREATE TABLE medical_histories (
+   ID INT GENERATED ALWAYS AS IDENTITY,
+   ADMITTED_AT TIMESTAMP,
+   PATIENT_ID INT,
+   CONSTRAINT FK_PATIENTS FOREIGN KEY(PATIENT_ID) REFERENCES patients(ID),
+   STATUS VARCHAR(20),
+   PRIMARY KEY(ID)
+);
+
+-- Create the invoices table
+CREATE TABLE invoices (
+   ID INT GENERATED ALWAYS AS IDENTITY,
+   TOTAL_AMOUNT DECIMAL,
+   GENERATED_AT TIMESTAMP,
+   PAYED_AT TIMESTAMP,
+   MEDICAL_HISTORY_ID INT,
+   CONSTRAINT FK_MEDICAL_HISTORY_ID FOREIGN KEY(MEDICAL_HISTORY_ID) REFERENCES medical_histories(ID),
+   PRIMARY KEY(ID)
+);
+
+-- Create the treatments table
+CREATE TABLE treatments (
+   ID INT GENERATED ALWAYS AS IDENTITY,
+   TYPE  VARCHAR(20),
+   NAME VARCHAR(20),
+   PRIMARY KEY(ID)
+);
+
+-- Create the invoice_items table
+CREATE TABLE invoice_items (
+   ID INT GENERATED ALWAYS AS IDENTITY,
+   UNIT_PRICE  DECIMAL,
+   QUANTITY INT,
+   TOTAL_PRICE DECIMAL,
+   INVOICE_ID INT,
+   TREATMENT_ID INT,
+   CONSTRAINT FK_INVOICE_ID FOREIGN KEY(INVOICE_ID) REFERENCES invoices(ID),
+   CONSTRAINT FK_TREATMENT_ID FOREIGN KEY(TREATMENT_ID) REFERENCES treatments(ID),
+   PRIMARY KEY(ID)
+);
+
+-- Create the medical_histories_treatments many-to-many join table
+CREATE TABLE medical_histories_treatments (
+   ID INT GENERATED ALWAYS AS IDENTITY,
+   MEDICAL_HISTORIES_ID  INT,
+   TREATMENT_ID INT,
+   CONSTRAINT FK_MEDICAL_HISTORIES_ID FOREIGN KEY(MEDICAL_HISTORIES_ID) REFERENCES medical_histories(ID),
+   CONSTRAINT FK_TREATMENT_ID FOREIGN KEY(TREATMENT_ID) REFERENCES treatments(ID),
+   PRIMARY KEY(ID)
+);
+
+-- Create index for the PATIENT_ID column in medical_histories table
+CREATE INDEX PATIENT_ID_INDEX ON medical_histories(PATIENT_ID);
+
+-- Create index for the MEDICAL_HISTORY_ID colunm in the invoices table
+CREATE INDEX MEDICAL_HISTORY_ID_INDEX ON invoices (MEDICAL_HISTORY_ID);
+
+-- Create index for the INVOICE_ID and TREATMENT_ID colunms in the invoice_items table
+CREATE INDEX INVOICE_ID_INDEX ON invoice_items(INVOICE_ID);
+CREATE INDEX TREATMENT_ID_INDEX ON invoice_items(TREATMENT_ID);
+
+-- Create index for the MEDICAL_HISTORIES_ID and TREATMENT_ID colunms in the medical_histories_treatments table
+CREATE INDEX MEDICAL_HISTORIES_ID_JOIN_INDEX ON medical_histories_treatments(MEDICAL_HISTORIES_ID);
+CREATE INDEX TREATMENT_ID_JOIN_INDEX ON medical_histories_treatments(TREATMENT_ID);
