@@ -1,6 +1,6 @@
 <div align="center">
   <h2><b>Clinic Database</b></h2>
-  <h4>Ivan Gonzalez && Bruno Kambere</h4> 
+  <h4>Ivan Gonzalez & Bruno Kambere</h4> 
 </div>
 <br>
 
